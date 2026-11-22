@@ -5,31 +5,38 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MEMORY GARDEN</title>
+
 <style>
 * { box-sizing: border-box; }
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: #f5f5ec;
   color: #405344;
 }
+
 header {
   text-align: center;
   padding: 35px 15px;
   background: #dce9d5;
 }
+
 h1 { letter-spacing: 3px; }
+
 main {
-  max-width: 700px;
+  max-width: 850px;
   margin: 25px auto;
   padding: 15px;
 }
+
 section {
   background: white;
   padding: 22px;
   margin-bottom: 20px;
   border-radius: 18px;
 }
+
 input, textarea, button {
   width: 100%;
   padding: 12px;
@@ -38,29 +45,63 @@ input, textarea, button {
   border-radius: 9px;
   font-size: 15px;
 }
+
 textarea { min-height: 85px; }
+
 button {
   background: #789b78;
   color: white;
   border: none;
   cursor: pointer;
 }
+
 button:hover { background: #597b5a; }
+
+.secondary {
+  background: #a4b69a;
+}
+
 .memory {
   background: #f2f6ed;
-  padding: 13px;
+  padding: 14px;
   border-radius: 12px;
   margin: 10px 0;
 }
-.flower { font-size: 28px; }
+
+.folder {
+  background: #f2f6ed;
+  border: 1px solid #dce9d5;
+  border-radius: 15px;
+  margin: 12px 0;
+  padding: 15px;
+}
+
+.folder summary {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 17px;
+}
+
+.plants {
+  font-size: 24px;
+  margin: 10px 0;
+}
+
 .result {
   background: #edf5e9;
   padding: 13px;
   border-radius: 10px;
   margin-top: 10px;
 }
+
+.small {
+  color: #718071;
+  font-size: 13px;
+}
+
 </style>
 </head>
+
 <body>
 
 <header>
@@ -69,57 +110,134 @@ button:hover { background: #597b5a; }
 </header>
 
 <main>
+
 <section>
   <h2>🌱 새로운 기억 기록하기</h2>
+
   <input id="writer" placeholder="작성자 (예: 할머니)">
+
   <input id="date" type="date">
-  <textarea id="content" placeholder="소중한 기억을 적어주세요."></textarea>
-  <input id="keywords" placeholder="키워드 (예: 바다, 조개, 가족)">
+
+  <input id="eventName"
+    placeholder="사건 이름 (예: 바닷가에서 보낸 하루)">
+
+  <textarea id="content"
+    placeholder="소중한 기억을 적어주세요."></textarea>
+
+  <input id="keywords"
+    placeholder="키워드 (예: 바다, 조개, 가족)">
+
   <button onclick="addMemory()">기억 정원에 심기</button>
 </section>
 
 <section>
-  <h2>🌼 AI 기억 분석</h2>
-  <p>날짜와 사건 키워드를 비교하여 관련 기억을 찾아요.</p>
-  <div id="analysis">아직 분석할 기억이 없습니다.</div>
+  <h2>🌿 AI 기억 분석</h2>
+  <p class="small">
+    날짜와 공통 키워드를 비교해 관련 기억 후보를 찾아요.
+  </p>
+  <div id="analysis"></div>
 </section>
 
 <section>
   <h2>🌻 우리 가족의 기억 정원</h2>
+  <p class="small">
+    사건 폴더를 누르면 가족들의 기억을 볼 수 있어요.
+  </p>
   <div id="garden"></div>
 </section>
+
 </main>
 
 <script>
-let memories = JSON.parse(localStorage.getItem("memories") || "[]");
+let memories = JSON.parse(
+  localStorage.getItem("memories") || "[]"
+);
+
+let approvedPairs = JSON.parse(
+  localStorage.getItem("approvedPairs") || "[]"
+);
+
+let rejectedPairs = JSON.parse(
+  localStorage.getItem("rejectedPairs") || "[]"
+);
+
+// 기존에 저장한 기억도 새 구조에서 사용할 수 있도록 처리
+memories = memories.map(m => ({
+  ...m,
+  eventName: m.eventName || "이름이 정해지지 않은 기억",
+  keywords: m.keywords || []
+}));
+
+// 키워드에 따라 서로 다른 식물 표시
+function getPlant(keyword) {
+  const k = keyword.toLowerCase();
+
+  if (["바다", "바닷가", "해변", "조개"].some(x => k.includes(x)))
+    return "🌊";
+
+  if (["가족", "엄마", "아빠", "할머니", "할아버지"].some(x => k.includes(x)))
+    return "🌻";
+
+  if (["여행", "소풍", "나들이"].some(x => k.includes(x)))
+    return "🌷";
+
+  if (["생일", "파티", "축하"].some(x => k.includes(x)))
+    return "🌼";
+
+  if (["학교", "친구", "졸업"].some(x => k.includes(x)))
+    return "🌿";
+
+  if (["음식", "요리", "식사"].some(x => k.includes(x)))
+    return "🍀";
+
+  return "🌸";
+}
+
+function saveData() {
+  localStorage.setItem("memories", JSON.stringify(memories));
+  localStorage.setItem("approvedPairs", JSON.stringify(approvedPairs));
+  localStorage.setItem("rejectedPairs", JSON.stringify(rejectedPairs));
+}
 
 function addMemory() {
   const writer = document.getElementById("writer").value.trim();
   const date = document.getElementById("date").value;
+  const eventName = document.getElementById("eventName").value.trim();
   const content = document.getElementById("content").value.trim();
-  const keywords = document.getElementById("keywords").value
-    .split(",").map(k => k.trim()).filter(k => k);
 
-  if (!writer || !date || !content || keywords.length === 0) {
+  const keywords = document.getElementById("keywords").value
+    .split(",")
+    .map(k => k.trim())
+    .filter(k => k);
+
+  if (!writer || !date || !eventName || !content || keywords.length === 0) {
     alert("모든 항목을 입력해 주세요!");
     return;
   }
 
   memories.push({
     id: Date.now(),
-    writer, date, content, keywords,
-    approved: false
+    writer,
+    date,
+    eventName,
+    content,
+    keywords
   });
 
-  localStorage.setItem("memories", JSON.stringify(memories));
+  saveData();
 
   document.getElementById("writer").value = "";
   document.getElementById("date").value = "";
+  document.getElementById("eventName").value = "";
   document.getElementById("content").value = "";
   document.getElementById("keywords").value = "";
 
   analyze();
   showGarden();
+}
+
+function getPairId(a, b) {
+  return [a.id, b.id].sort((x, y) => x - y).join("-");
 }
 
 function analyze() {
@@ -132,50 +250,64 @@ function analyze() {
       const a = memories[i];
       const b = memories[j];
 
-      const common = a.keywords.filter(k => b.keywords.includes(k));
+      const common = a.keywords.filter(k =>
+        b.keywords.some(other => other.toLowerCase() === k.toLowerCase())
+      );
+
       const sameDate = a.date === b.date;
+      const pairId = getPairId(a, b);
+
+      if (approvedPairs.includes(pairId) ||
+          rejectedPairs.includes(pairId)) continue;
 
       if (common.length >= 1 || sameDate) {
         found++;
-        const id = a.id + "-" + b.id;
 
-        area.innerHTML += `
-          <div class="result">
-            <b>🌿 관련 기억 후보 발견!</b>
-            <p>${a.writer}와 ${b.writer}의 기억</p>
-            <p>공통 키워드: ${common.join(", ") || "없음"}</p>
-            <p>날짜 일치: ${sameDate ? "예" : "아니오"}</p>
-            <button onclick="approve('${id}')">이 기억 연결하기</button>
-            <button onclick="reject('${id}')">연결하지 않기</button>
-          </div>`;
+        const box = document.createElement("div");
+        box.className = "result";
+
+        const title = document.createElement("b");
+        title.textContent = "🌿 관련 기억 후보 발견!";
+
+        const detail = document.createElement("p");
+        detail.textContent = a.writer + "와 " + b.writer + "의 기억";
+
+        const words = document.createElement("p");
+        words.textContent = "공통 키워드: " + (common.join(", ") || "없음");
+
+        const dateText = document.createElement("p");
+        dateText.textContent = "날짜 일치: " + (sameDate ? "예" : "아니오");
+
+        const yes = document.createElement("button");
+        yes.textContent = "이 기억 연결하기";
+        yes.onclick = () => approve(pairId);
+
+        const no = document.createElement("button");
+        no.textContent = "연결하지 않기";
+        no.className = "secondary";
+        no.onclick = () => reject(pairId);
+
+        box.append(title, detail, words, dateText, yes, no);
+        area.appendChild(box);
       }
     }
   }
 
   if (found === 0) {
-    area.textContent = "아직 관련 기억 후보가 없습니다.";
+    area.textContent = "새로운 관련 기억 후보가 없습니다.";
   }
 }
 
-function approve(id) {
-  const pair = id.split("-").map(Number);
-  memories.forEach(m => {
-    if (pair.includes(m.id)) m.approved = true;
-  });
-  localStorage.setItem("memories", JSON.stringify(memories));
+function approve(pairId) {
+  approvedPairs.push(pairId);
+  saveData();
+  analyze();
   showGarden();
-  alert("기억 연결을 승인했어요!");
 }
 
-function reject(id) {
-  const pair = id.split("-").map(Number);
-  const a = memories.find(m => m.id === pair[0]);
-  const b = memories.find(m => m.id === pair[1]);
-  if (a && b) {
-    a.rejected = a.rejected || [];
-    a.rejected.push(b.id);
-  }
-  localStorage.setItem("memories", JSON.stringify(memories));
+function reject(pairId) {
+  rejectedPairs.push(pairId);
+  saveData();
   analyze();
 }
 
@@ -183,20 +315,77 @@ function showGarden() {
   const garden = document.getElementById("garden");
   garden.innerHTML = "";
 
+  const groups = {};
+
   memories.forEach(m => {
-    garden.innerHTML += `
-      <div class="memory">
-        <div class="flower">🌸</div>
-        <b>${m.writer}</b> · ${m.date}
-        <p>${m.content}</p>
-        <small>키워드: ${m.keywords.join(", ")}</small>
-        ${m.approved ? "<p>🌿 연결 승인된 기억</p>" : ""}
-      </div>`;
+    if (!groups[m.eventName]) groups[m.eventName] = [];
+    groups[m.eventName].push(m);
   });
+
+  Object.keys(groups).forEach(eventName => {
+    const records = groups[eventName];
+
+    const folder = document.createElement("details");
+    folder.className = "folder";
+
+    const summary = document.createElement("summary");
+    summary.textContent =
+      "📁 " + eventName + " (" + records.length + "개의 기억)";
+
+    const plantArea = document.createElement("div");
+    plantArea.className = "plants";
+
+    const uniqueKeywords = [
+      ...new Set(records.flatMap(m => m.keywords))
+    ];
+
+    uniqueKeywords.forEach(keyword => {
+      const plant = document.createElement("span");
+      plant.textContent = getPlant(keyword) + " ";
+      plant.title = keyword;
+      plantArea.appendChild(plant);
+    });
+
+    const label = document.createElement("p");
+    label.className = "small";
+    label.textContent = "이 사건에 담긴 가족들의 기억";
+
+    folder.append(summary, plantArea, label);
+
+    records.forEach(m => {
+      const card = document.createElement("div");
+      card.className = "memory";
+
+      const writer = document.createElement("b");
+      writer.textContent = m.writer + " · " + m.date;
+
+      const content = document.createElement("p");
+      content.textContent = m.content;
+
+      const keywords = document.createElement("p");
+      keywords.className = "small";
+      keywords.textContent =
+        "키워드: " + m.keywords.join(", ");
+
+      const plants = document.createElement("p");
+      plants.textContent = m.keywords.map(getPlant).join(" ");
+
+      card.append(writer, content, keywords, plants);
+      folder.appendChild(card);
+    });
+
+    garden.appendChild(folder);
+  });
+
+  if (memories.length === 0) {
+    garden.textContent = "아직 심어진 기억이 없습니다.";
+  }
 }
 
+saveData();
 analyze();
 showGarden();
+
 </script>
 </body>
 </html>
