@@ -20,13 +20,13 @@ body {
 
 header {
   background: #dce9d5;
-  padding: 28px 15px;
+  padding: 25px 15px;
   text-align: center;
 }
 
 header h1 {
-  letter-spacing: 3px;
   margin: 0 0 8px;
+  letter-spacing: 3px;
 }
 
 header p {
@@ -34,25 +34,32 @@ header p {
   color: #657b65;
 }
 
-nav {
+.workspace {
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 15px;
-  background: white;
-  border-bottom: 1px solid #e4e9df;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  min-height: 80vh;
+}
+
+nav {
+  width: 220px;
+  flex-shrink: 0;
+  background: #e8efe3;
+  padding: 25px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-right: 1px solid #dce6d7;
 }
 
 nav button {
-  width: auto;
-  margin: 0;
-  padding: 11px 17px;
-  background: #edf2e9;
+  width: 100%;
+  padding: 15px 12px;
+  background: transparent;
   color: #506750;
+  text-align: left;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
 }
 
 nav button.active {
@@ -61,9 +68,12 @@ nav button.active {
 }
 
 main {
-  max-width: 850px;
-  margin: 25px auto;
-  padding: 0 16px 35px;
+  flex: 1;
+  width: 100%;
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 0 25px 40px;
+  min-width: 0;
 }
 
 .page {
@@ -76,7 +86,7 @@ main {
 
 .panel {
   background: white;
-  padding: 25px;
+  padding: 27px;
   border-radius: 18px;
   box-shadow: 0 3px 12px rgba(70,90,65,0.05);
 }
@@ -88,7 +98,7 @@ h2 {
 .description {
   color: #829082;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 input, textarea, button {
@@ -127,17 +137,17 @@ button.danger {
 
 .memory-card {
   background: #f3f6ef;
-  padding: 15px;
-  margin: 10px 0;
+  padding: 16px;
+  margin: 12px 0;
   border-radius: 12px;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .folder {
-  background: #fff;
+  background: white;
   border: 1px solid #dce6d7;
   border-radius: 15px;
-  margin: 13px 0;
+  margin: 14px 0;
   padding: 16px;
 }
 
@@ -145,13 +155,21 @@ button.danger {
   cursor: pointer;
   font-weight: bold;
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .plant-area {
-  font-size: 25px;
   padding: 10px 0;
-  letter-spacing: 3px;
+  line-height: 2.2;
+}
+
+.plant-label {
+  display: inline-block;
+  background: #eff5eb;
+  border-radius: 15px;
+  padding: 5px 10px;
+  margin: 3px;
+  font-size: 14px;
 }
 
 .small {
@@ -161,20 +179,13 @@ button.danger {
 
 .result {
   background: #eff5eb;
-  padding: 15px;
+  padding: 16px;
   border-radius: 12px;
   margin: 12px 0;
 }
 
 .result p {
-  line-height: 1.5;
-}
-
-.search-info {
-  background: #f3f6ef;
-  padding: 12px;
-  border-radius: 10px;
-  margin-bottom: 15px;
+  line-height: 1.6;
 }
 
 .empty {
@@ -184,15 +195,6 @@ button.danger {
   line-height: 1.8;
 }
 
-.plant-label {
-  display: inline-block;
-  background: #eff5eb;
-  border-radius: 15px;
-  padding: 5px 9px;
-  margin: 3px;
-  font-size: 13px;
-}
-
 footer {
   text-align: center;
   color: #91a08e;
@@ -200,14 +202,31 @@ footer {
   padding: 20px;
 }
 
-@media(max-width:500px) {
-  nav {
-    gap: 5px;
+@media(max-width:600px) {
+  .workspace {
+    flex-direction: column;
   }
-  nav button {
+
+  nav {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
     padding: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  nav button {
+    min-width: 115px;
+    text-align: center;
     font-size: 13px;
   }
+
+  main {
+    padding: 0 12px 30px;
+  }
+
   .panel {
     padding: 18px;
   }
@@ -222,16 +241,17 @@ footer {
   <p>가족의 기억이 모여 하나의 정원이 됩니다.</p>
 </header>
 
+<div class="workspace">
+
 <nav>
-  <button class="active" data-page="record">🌱 기억 기록</button>
-  <button data-page="analysis">🌿 기억 분석</button>
+  <button class="active" data-page="record">🌱 기억 기록실</button>
+  <button data-page="analysis">🔍 기억 분석실</button>
   <button data-page="garden">🌻 가족 정원</button>
   <button data-page="archive">📁 기억 보관함</button>
 </nav>
 
 <main>
 
-<!-- 1. 기억 기록 -->
 <section id="record" class="page active">
   <div class="panel">
     <h2>🌱 새로운 기억 기록하기</h2>
@@ -250,23 +270,22 @@ footer {
       placeholder="키워드 (예: 바다, 조개, 가족)">
 
     <button id="saveButton">🌷 기억 정원에 심기</button>
+
     <p class="small">여러 키워드는 쉼표(,)로 구분해 주세요.</p>
   </div>
 </section>
 
-<!-- 2. 기억 분석 -->
 <section id="analysis" class="page">
   <div class="panel">
-    <h2>🌿 AI 기억 분석</h2>
+    <h2>🔍 AI 기억 분석실</h2>
     <p class="description">
-      날짜와 사건 키워드를 비교하여 관련성이 있는 기억을 찾아요.
-      AI가 제안한 연결은 가족이 직접 결정할 수 있어요.
+      날짜와 키워드를 비교하여 서로 관련된 가족의 기억을 찾아요.
+      연결 여부는 가족이 직접 결정할 수 있어요.
     </p>
     <div id="analysisResults"></div>
   </div>
 </section>
 
-<!-- 3. 가족 정원 -->
 <section id="garden" class="page">
   <div class="panel">
     <h2>🌻 우리 가족의 기억 정원</h2>
@@ -277,7 +296,6 @@ footer {
   </div>
 </section>
 
-<!-- 4. 기억 보관함 -->
 <section id="archive" class="page">
   <div class="panel">
     <h2>📁 기억 보관함</h2>
@@ -293,6 +311,7 @@ footer {
 </section>
 
 </main>
+</div>
 
 <footer>
   MEMORY GARDEN · 우리 가족의 소중한 기록
@@ -300,7 +319,7 @@ footer {
 
 <script>
 
-// 기존에 저장된 기억 불러오기
+// 기존 저장 데이터 불러오기
 let memories = JSON.parse(
   localStorage.getItem("memories") || "[]"
 );
@@ -313,7 +332,7 @@ let rejectedPairs = JSON.parse(
   localStorage.getItem("rejectedPairs") || "[]"
 );
 
-// 이전 버전의 기억도 사용할 수 있도록 보완
+// 기존 기억 데이터 보완
 memories = memories.map(m => ({
   ...m,
   eventName: m.eventName || "이름이 정해지지 않은 기억",
@@ -326,17 +345,25 @@ function saveData() {
   localStorage.setItem("rejectedPairs", JSON.stringify(rejectedPairs));
 }
 
-// 화면 요소 생성 도우미
+// 안전한 화면 요소 생성
 function makeElement(tag, className, text) {
   const element = document.createElement(tag);
-  if (className) element.className = className;
-  if (text !== undefined) element.textContent = text;
+
+  if (className) {
+    element.className = className;
+  }
+
+  if (text !== undefined) {
+    element.textContent = text;
+  }
+
   return element;
 }
 
 // 메뉴 이동
 document.querySelectorAll("nav button").forEach(button => {
   button.addEventListener("click", () => {
+
     const pageId = button.dataset.page;
 
     document.querySelectorAll(".page").forEach(page => {
@@ -354,53 +381,64 @@ document.querySelectorAll("nav button").forEach(button => {
   });
 });
 
-// 키워드에 따라 식물 선택
+// 키워드별 식물 배정
 function getPlant(keyword) {
-  const k = keyword.toLowerCase();
 
-  if (["바다","바닷가","해변","조개"].some(x => k.includes(x)))
-    return "🌊";
+  const plants = {
+    "바다": "🌊",
+    "바닷가": "🏖️",
+    "해변": "🏝️",
+    "조개": "🐚",
+    "가족": "🌻",
+    "엄마": "🌷",
+    "아빠": "🌹",
+    "할머니": "🌼",
+    "할아버지": "🌺",
+    "여행": "🌴",
+    "소풍": "🌸",
+    "나들이": "🌱",
+    "생일": "🎂",
+    "파티": "💐",
+    "축하": "🌟",
+    "학교": "🌿",
+    "친구": "🍀",
+    "졸업": "🌳",
+    "음식": "🍎",
+    "요리": "🥕",
+    "식사": "🌾",
+    "꽃": "🌺",
+    "정원": "🌷",
+    "식물": "🪴"
+  };
 
-  if (["가족","엄마","아빠","할머니","할아버지"].some(x => k.includes(x)))
-    return "🌻";
-
-  if (["여행","소풍","나들이"].some(x => k.includes(x)))
-    return "🌷";
-
-  if (["생일","파티","축하"].some(x => k.includes(x)))
-    return "🌼";
-
-  if (["학교","친구","졸업"].some(x => k.includes(x)))
-    return "🌿";
-
-  if (["음식","요리","식사"].some(x => k.includes(x)))
-    return "🍀";
-
-  if (["꽃","정원","식물"].some(x => k.includes(x)))
-    return "🌺";
-
-  return "🌸";
+  return plants[keyword.trim()] || "🌼";
 }
 
-// 키워드 식물 표시
+// 키워드별 식물 표시
 function showPlants(keywords) {
+
   const area = makeElement("div", "plant-area");
+
   const unique = [...new Set(keywords)];
 
   unique.forEach(keyword => {
+
     const plant = makeElement(
       "span",
       "plant-label",
       getPlant(keyword) + " " + keyword
     );
+
     area.appendChild(plant);
   });
 
   return area;
 }
 
-// 기억 입력 및 저장
-document.getElementById("saveButton").addEventListener("click", () => {
+// 기억 저장
+document.getElementById("saveButton")
+.addEventListener("click", () => {
+
   const writer = document.getElementById("writer").value.trim();
   const date = document.getElementById("date").value;
   const eventName = document.getElementById("eventName").value.trim();
@@ -437,25 +475,27 @@ document.getElementById("saveButton").addEventListener("click", () => {
 
   alert("새로운 기억이 정원에 심어졌어요! 🌷");
 
-  // 저장 후 가족 정원으로 이동
   document.querySelector('[data-page="garden"]').click();
 });
 
-// 두 기억의 고유 연결 번호
+// 두 기억의 연결 번호
 function getPairId(a, b) {
+
   return [a.id, b.id]
     .sort((x, y) => String(x).localeCompare(String(y)))
     .join("-");
 }
 
-// 관련 기억 후보 분석
+// 기억 분석
 function renderAnalysis() {
+
   const area = document.getElementById("analysisResults");
   area.innerHTML = "";
 
   let count = 0;
 
   for (let i = 0; i < memories.length; i++) {
+
     for (let j = i + 1; j < memories.length; j++) {
 
       const a = memories[i];
@@ -471,19 +511,34 @@ function renderAnalysis() {
       const pairId = getPairId(a, b);
 
       if (approvedPairs.includes(pairId) ||
-          rejectedPairs.includes(pairId)) continue;
+          rejectedPairs.includes(pairId)) {
+        continue;
+      }
 
       if (common.length > 0 || sameDate) {
+
         count++;
 
         const box = makeElement("div", "result");
 
-        box.appendChild(makeElement("b", "", "🌿 관련 기억 후보 발견!"));
-        box.appendChild(makeElement("p", "", a.writer + "와 " + b.writer + "의 기억"));
-        box.appendChild(makeElement("p", "", "공통 키워드: " + (common.join(", ") || "없음")));
-        box.appendChild(makeElement("p", "", "날짜 일치: " + (sameDate ? "예" : "아니오")));
+        box.appendChild(
+          makeElement("b", "", "🌿 관련 기억 후보 발견!")
+        );
+
+        box.appendChild(
+          makeElement("p", "", a.writer + "와 " + b.writer + "의 기억")
+        );
+
+        box.appendChild(
+          makeElement("p", "", "공통 키워드: " + (common.join(", ") || "없음"))
+        );
+
+        box.appendChild(
+          makeElement("p", "", "날짜 일치: " + (sameDate ? "예" : "아니오"))
+        );
 
         const yes = makeElement("button", "", "이 기억 연결하기");
+
         yes.addEventListener("click", () => {
           approvedPairs.push(pairId);
           saveData();
@@ -491,6 +546,7 @@ function renderAnalysis() {
         });
 
         const no = makeElement("button", "secondary", "연결하지 않기");
+
         no.addEventListener("click", () => {
           rejectedPairs.push(pairId);
           saveData();
@@ -504,8 +560,11 @@ function renderAnalysis() {
   }
 
   if (count === 0) {
+
     area.appendChild(
-      makeElement("div", "empty",
+      makeElement(
+        "div",
+        "empty",
         memories.length < 2
           ? "기억을 두 개 이상 기록하면 관련 기억을 분석할 수 있어요. 🌱"
           : "새로운 관련 기억 후보가 없습니다. 🌿"
@@ -514,24 +573,32 @@ function renderAnalysis() {
   }
 }
 
-// 사건별 폴더 구성
+// 사건별 가족 정원
 function renderGarden() {
+
   const area = document.getElementById("gardenResults");
   area.innerHTML = "";
 
   const groups = {};
 
   memories.forEach(m => {
-    if (!groups[m.eventName]) groups[m.eventName] = [];
+
+    if (!groups[m.eventName]) {
+      groups[m.eventName] = [];
+    }
+
     groups[m.eventName].push(m);
   });
 
   Object.keys(groups).forEach(eventName => {
+
     const records = groups[eventName];
 
     const folder = makeElement("details", "folder");
+
     const summary = makeElement(
-      "summary", "",
+      "summary",
+      "",
       "📁 " + eventName + " · " + records.length + "개의 기억"
     );
 
@@ -544,17 +611,23 @@ function renderGarden() {
     folder.appendChild(showPlants(allKeywords));
 
     records.forEach(m => {
+
       const card = makeElement("div", "memory-card");
 
-      card.appendChild(makeElement(
-        "b", "", m.writer + " · " + m.date
-      ));
+      card.appendChild(
+        makeElement("b", "", m.writer + " · " + m.date)
+      );
 
-      card.appendChild(makeElement("p", "", m.content));
+      card.appendChild(
+        makeElement("p", "", m.content)
+      );
+
       card.appendChild(showPlants(m.keywords));
 
       const connected = approvedPairs.some(pairId => {
+
         const ids = pairId.split("-");
+
         return ids.includes(String(m.id));
       });
 
@@ -571,6 +644,7 @@ function renderGarden() {
   });
 
   if (memories.length === 0) {
+
     area.appendChild(
       makeElement("div", "empty", "아직 정원에 심어진 기억이 없어요. 🌱")
     );
@@ -579,6 +653,7 @@ function renderGarden() {
 
 // 기억 보관함 검색
 function renderArchive() {
+
   const area = document.getElementById("archiveResults");
   area.innerHTML = "";
 
@@ -586,6 +661,7 @@ function renderArchive() {
     .value.trim().toLowerCase();
 
   const filtered = memories.filter(m => {
+
     const text = [
       m.writer,
       m.date,
@@ -600,32 +676,39 @@ function renderArchive() {
   filtered.sort((a, b) => b.date.localeCompare(a.date));
 
   filtered.forEach(m => {
+
     const card = makeElement("div", "memory-card");
 
-    card.appendChild(makeElement(
-      "b", "", "📁 " + m.eventName
-    ));
+    card.appendChild(
+      makeElement("b", "", "📁 " + m.eventName)
+    );
 
-    card.appendChild(makeElement(
-      "p", "", m.writer + " · " + m.date
-    ));
+    card.appendChild(
+      makeElement("p", "", m.writer + " · " + m.date)
+    );
 
-    card.appendChild(makeElement("p", "", m.content));
+    card.appendChild(
+      makeElement("p", "", m.content)
+    );
+
     card.appendChild(showPlants(m.keywords));
 
     area.appendChild(card);
   });
 
   if (filtered.length === 0) {
+
     area.appendChild(
       makeElement("div", "empty", "검색 결과가 없습니다.")
     );
   }
 }
 
+// 검색 입력
 document.getElementById("searchInput")
-  .addEventListener("input", renderArchive);
+.addEventListener("input", renderArchive);
 
+// 모든 화면 갱신
 function renderAll() {
   renderAnalysis();
   renderGarden();
